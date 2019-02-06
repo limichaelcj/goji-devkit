@@ -13,4 +13,4 @@
 - **smoothScroll.js**: Clicking on a page link will send the viewport smoothly to the target.
 
 *UI Components*
-- **goji-spinner.css**: CSS-only spinner, easily injected into HTML with a single <div>.
+- **tri-spinner.css**: CSS-only spinner, easily injected into HTML with a single <div>.

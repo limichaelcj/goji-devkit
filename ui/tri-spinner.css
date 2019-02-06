@@ -1,9 +1,9 @@
 /*
-  Inject into HTML with: <div class="goji-spinner"></div>
+  Inject into HTML with: <div class="tri-spinner"></div>
   Spinner size is relative to font-size of parent container (4em)
 */
 
-.goji-spinner {
+.tri-spinner {
   width: 4em;
   height: 4em;
   margin: auto;
@@ -19,7 +19,7 @@
   animation: goji-pulse 2s cubic-bezier(.9,.1,.32,.68) infinite forwards;
 }
 
-.goji-spinner:before {
+.tri-spinner:before {
   content: "";
   width: 0;
   height: 0;
@@ -30,9 +30,9 @@
   top: calc(50% - 2.89em);
   left: calc(50% - 1em);
   transform-origin: 50% 2.89em;
-  animation: goji-spin 2s cubic-bezier(.88,.09,.51,.96) infinite forwards;
+  animation: tri-spin 2s cubic-bezier(.88,.09,.51,.96) infinite forwards;
 }
-.goji-spinner:after {
+.tri-spinner:after {
   content: "";
   width: 0;
   height: 0;
@@ -43,10 +43,11 @@
   top: calc(50% - 2.89em);
   left: calc(50% - 1em);
   transform-origin: 50% 2.89em;
-  animation: goji-spin 2s cubic-bezier(.64,.02,.34,.95) infinite forwards;
+  animation: tri-spin 2s cubic-bezier(.64,.02,.34,.95) infinite forwards;
 }
 
-@keyframes goji-spin {
+
+@keyframes tri-spin {
   from {
     transform: rotate(0);
   }
@@ -55,7 +56,7 @@
   }
 }
 
-@keyframes goji-pulse {
+@keyframes tri-pulse {
   0% {
     transform: scale(0.7);
   }
