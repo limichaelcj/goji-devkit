@@ -1,0 +1,68 @@
+/*
+  Inject into HTML with: <div class="goji-spinner"></div>
+  Spinner size is relative to font-size of parent container (4em)
+*/
+
+.goji-spinner {
+  width: 4em;
+  height: 4em;
+  margin: auto;
+  padding: 0;
+  font-size: 2em;
+  top: 1em;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  background: transparent;
+  transform-origin: 50% 50%;
+  animation: goji-pulse 2s cubic-bezier(.9,.1,.32,.68) infinite forwards;
+}
+
+.goji-spinner:before {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 1em solid transparent;
+  border-top-width: 1.73em;
+  border-bottom: 1.73em solid #e57373;
+  position: absolute;
+  top: calc(50% - 2.89em);
+  left: calc(50% - 1em);
+  transform-origin: 50% 2.89em;
+  animation: goji-spin 2s cubic-bezier(.88,.09,.51,.96) infinite forwards;
+}
+.goji-spinner:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 1em solid transparent;
+  border-top-width: 1.73em;
+  border-bottom: 1.73em solid #42A5F5;
+  position: absolute;
+  top: calc(50% - 2.89em);
+  left: calc(50% - 1em);
+  transform-origin: 50% 2.89em;
+  animation: goji-spin 2s cubic-bezier(.64,.02,.34,.95) infinite forwards;
+}
+
+@keyframes goji-spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(2turn);
+  }
+}
+
+@keyframes goji-pulse {
+  0% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.7);
+  }
+}
