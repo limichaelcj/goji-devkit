@@ -1,0 +1,19 @@
+{
+  "name": "goji-webkit",
+  "version": "1.0.0",
+  "description": "simple, flexible webdev tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcli830/goji-webkit.git"
+  },
+  "author": "mcli830",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcli830/goji-webkit/issues"
+  },
+  "homepage": "https://github.com/mcli830/goji-webkit#readme"
+}
