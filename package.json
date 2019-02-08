@@ -1,5 +1,5 @@
 {
-  "name": "goji-webkit",
+  "name": "@goji/webkit",
   "version": "1.0.0",
   "description": "simple, flexible webdev tools",
   "main": "index.js",
