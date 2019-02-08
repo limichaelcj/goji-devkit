@@ -1,6 +1,7 @@
 /*
-  Inject into HTML with: <div class="tri-spinner"></div>
-  Spinner size is relative to font-size of parent container (4em)
+ * Inject into HTML with: <div class="tri-spinner"></div>
+ * Spinner size scales with the parent container's font-size
+ * Maximum spinner size spans 4em width and height
 */
 
 .tri-spinner {
