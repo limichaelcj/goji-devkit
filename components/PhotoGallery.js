@@ -1,4 +1,4 @@
-class PhotoGallery {
+export default class PhotoGallery {
   constructor(images,node){
     this._node = null; //parent node
     this._galleryNode = null; //container node .PhotoGallery

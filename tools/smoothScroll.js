@@ -1,6 +1,6 @@
-/* Dependencies: jQuery */
+/* Requires jQuery */
 
-function setupSmoothScroll(tag,exclude,className,removal=false){
+export default function setupSmoothScroll(tag,exclude,className,removal=false){
   $("a").on('click', function(e){
     if (this.hash !== ''){
       e.preventDefault();

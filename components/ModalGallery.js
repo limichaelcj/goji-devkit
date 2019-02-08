@@ -8,7 +8,7 @@
   * exit button (absolutely positioned)
 */
 
-class ModalGallery {
+export default class ModalGallery {
   constructor(){
     this._node = null;
     this._view = null;

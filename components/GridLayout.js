@@ -1,4 +1,4 @@
-class GridLayout {
+export default class GridLayout {
   constructor(rows=10,columns=15){
     this._rows = rows;
     this._columns = columns;

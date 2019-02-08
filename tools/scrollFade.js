@@ -1,6 +1,6 @@
-/* Dependencies: jQuery */
+/* Requires jQuery */
 
-function setupScrollFade(selector,exclude,className,install=true){
+export default function setupScrollFade(selector,exclude,className,install=true){
   if (install) $(document).on('scroll', scrollFade);
   else $(document).off('scroll', scrollFade);
 
