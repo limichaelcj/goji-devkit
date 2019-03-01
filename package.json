@@ -2,9 +2,9 @@
   "name": "mcli-webkit",
   "version": "1.0.0",
   "description": "simple, flexible webdev tools",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "http-server -c-1 -p 3000"
   },
   "repository": {
     "type": "git",
