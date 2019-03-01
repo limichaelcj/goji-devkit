@@ -1,4 +1,4 @@
-## MCLI Webkit
+## Goji Devkit
 ###### Flexible Web Development Components and Tools
 
 
