@@ -1,5 +1,5 @@
 {
-  "name": "mcli-webkit",
+  "name": "goji-devkit",
   "version": "1.0.0",
   "description": "simple, flexible webdev tools",
   "main": "index.html",
