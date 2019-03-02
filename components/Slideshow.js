@@ -96,10 +96,9 @@ class Slideshow {
     });
     // clone images if only two images for smooth transition
     if (this.slides.length == 2) {
-      for(let i=0;i<2;i++){
-        var clone = this.slides[i].cloneNode();
-        this.slides.push(clone);
-      }
+      const slideHTML = this.node.innerHTML;
+      this.node.innerHTML = slideHTML + slideHTML;
+      this._slides = Array.from(this.node.querySelectorAll('img'))
     }
     // set initial rotation position styles
     Object.assign(this.slides[0].style, this.rotation[1]);
@@ -107,7 +106,9 @@ class Slideshow {
       Object.assign(slide.style, this.rotation[2]);
     });
     // initialize rotation interval call
-    this._intervalInstance = setInterval(this.rotate, this.interval);
+    if (this.slides.length > 1) {
+      this._intervalInstance = setInterval(this.rotate, this.interval);
+    }
   }
 
   cycle(index) {
