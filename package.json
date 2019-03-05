@@ -1,7 +1,7 @@
 {
   "name": "goji-devkit",
   "version": "1.0.0",
-  "description": "simple, flexible webdev tools",
+  "description": "simple and flexible web development tools",
   "main": "index.html",
   "scripts": {
     "start": "http-server -c-1 -p 3000"
@@ -13,7 +13,7 @@
   "author": "mcli830",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mcli830/mcli-webkit/issues"
+    "url": "https://github.com/mcli830/goji-devkit/issues"
   },
-  "homepage": "https://github.com/mcli830/mcli-webkit#readme"
+  "homepage": "https://github.com/mcli830/goji-devkit#readme"
 }
