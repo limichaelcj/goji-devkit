@@ -70,12 +70,13 @@ class PhotoGallery {
   _initialize(){
     // parent node style
     const settings = this._settings;
+    const pad = `${settings.padding}px`;
     Object.assign(this.node.style, {
       overflow: 'auto',
       display: 'flex',
       flexDirection: settings.direction,
       alignItems: 'center',
-      padding: `${settings.padding}px`,
+      padding: pad,
       boxSizing: 'border-box',
       backgroundColor: settings.color
     });
@@ -86,11 +87,19 @@ class PhotoGallery {
     this.photos.forEach(photo => {
       Object.assign(photo.style, {
         [shortSide]: '100%',
-        [longSide]: 'auto',
+        flex: '0 0 auto'
       });
     });
     this.photos.slice(1).forEach(photo => {
-      photo.style[paddingSide] = `${settings.padding}px`;
+      photo.style[paddingSide] = pad;
     });
+    // add tail div to make up for ignored padding at end of flexbox
+    const tail = document.createElement('div');
+    Object.assign(tail.style, {
+      visibility: 'hidden',
+      [longSide]: pad,
+      [shortSide]: '100%'
+    });
+    this.node.appendChild(tail);
   }
 }
