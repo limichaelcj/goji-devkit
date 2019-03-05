@@ -82,11 +82,11 @@ class PhotoGallery {
     });
     // photos style
     const paddingSide = settings.direction == 'column' ? 'marginTop' : 'marginLeft';
-    const shortSide = settings.direction == 'column' ? 'width' : 'height';
-    const longSide = settings.direction == 'column' ? 'height' : 'width';
+    const span = settings.direction == 'column' ? 'width' : 'height';
+    const basis = settings.direction == 'column' ? 'height' : 'width';
     this.photos.forEach(photo => {
       Object.assign(photo.style, {
-        [shortSide]: '100%',
+        [span]: '100%',
         flex: '0 0 auto'
       });
     });
@@ -95,10 +95,12 @@ class PhotoGallery {
     });
     // add tail div to make up for ignored padding at end of flexbox
     const tail = document.createElement('div');
+    tail.innerHTML = '.';
+    const basisCap = basis.charAt(0).toUpperCase() + basis.slice(1);
     Object.assign(tail.style, {
       visibility: 'hidden',
-      [longSide]: pad,
-      [shortSide]: '100%'
+      ['min' + basisCap]: pad,
+      ['max' + basisCap]: pad,
     });
     this.node.appendChild(tail);
   }
