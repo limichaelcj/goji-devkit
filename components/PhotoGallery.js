@@ -103,5 +103,26 @@ class PhotoGallery {
       ['max' + basisCap]: pad,
     });
     this.node.appendChild(tail);
+    // scrollbar style
+    const sheet = document.styleSheets[document.styleSheets.length-1];
+    function cssRule(tag, cssObj){
+      return tag + ' ' + JSON.stringify(cssObj).replace(/\"/g,'').replace(/,/g,';');
+    }
+    const scrollbar = cssRule('::-webkit-scrollbar', {
+      width: '10px',
+      height: '10px'
+    });
+    const scrollbarTrack = cssRule('::-webkit-scrollbar-track', {
+      background: 'transparent',
+      borderRadius: '25px',
+    });
+    const scrollbarThumb = cssRule('::-webkit-scrollbar-thumb', {
+      background: '#444',
+      border: '1px solid #ddd',
+      boxShadow: '0 0 10px rgba(128,128,128,0.3)'
+    });
+    sheet.insertRule(scrollbar);
+    sheet.insertRule(scrollbarTrack);
+    sheet.insertRule(scrollbarThumb);
   }
 }
