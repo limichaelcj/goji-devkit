@@ -8,7 +8,13 @@ class PhotoGallery {
     this._settings = {
       direction: 'row',
       padding: 40,
-      color: 'white'
+      color: 'white',
+      scrollbar: {
+        width: 16,
+        color: '#222',
+        border: '#aaa',
+        radius: 0
+      }
     }
     this._configure(options);
   }
@@ -18,8 +24,8 @@ class PhotoGallery {
   get photos() {
     return this._photos;
   }
-  get style(){
-    return this._style;
+  get settings() {
+    return this._settings;
   }
 
   _configure(options) {
@@ -30,6 +36,10 @@ class PhotoGallery {
   _applySettings(options){
     // apply general settings
     const strongOptions = validate(options);
+    if (strongOptions.hasOwnProperty('scrollbar')) {
+      Object.assign(this._settings.scrollbar, strongOptions.scrollbar);
+      delete strongOptions.scrollbar;
+    }
     Object.assign(this._settings, strongOptions);
     // HELPER FUNCTIONS
     // data validation
@@ -41,19 +51,24 @@ class PhotoGallery {
       return newObj;
     }
     function validate(options){
-      const root = permit(options, ['direction', 'padding', 'color']);
+      const root = permit(options, ['direction', 'padding', 'color', 'scrollbar']);
       // direction
       if (root.hasOwnProperty('direction') && !['row', 'column'].includes(root.direction)) {
         delete root.direction;
         console.error('options.direction must equal one of the following strings: row, column')
       }
       // padding
-      if (root.hasOwnProperty('padding')){
-        clean(root, 'padding', 'number', 'options.padding');
-      }
+      clean(root, 'padding', 'number', 'options.padding');
       // color
-      if (root.hasOwnProperty('color')){
-        clean(root, 'color', 'string', 'options.color');
+      clean(root, 'color', 'string', 'options.color');
+      // scrollbar
+      clean(root, 'scrollbar', 'object', 'options.scrollbar');
+      if (root.hasOwnProperty('scrollbar')){
+        const scroll = permit(root.scrollbar, ['width', 'color', 'border', 'radius']);
+        clean(scroll, 'width', 'number', 'scrollbar.width');
+        clean(scroll, 'color', 'string', 'scrollbar.color');
+        clean(scroll, 'border', 'string', 'scrollbar.border');
+        clean(scroll, 'radius', 'number', 'scrollbar.radius');
       }
 
       return root;
@@ -71,6 +86,7 @@ class PhotoGallery {
     // parent node style
     const settings = this._settings;
     const pad = `${settings.padding}px`;
+    this.node.classList.add('goji-devkit-photogallery-scroll');
     Object.assign(this.node.style, {
       overflow: 'auto',
       display: 'flex',
@@ -104,25 +120,33 @@ class PhotoGallery {
     });
     this.node.appendChild(tail);
     // scrollbar style
-    const sheet = document.styleSheets[document.styleSheets.length-1];
+    const scrollTag = '.goji-devkit-photogallery-scroll::-webkit-scrollbar'
     function cssRule(tag, cssObj){
       return tag + ' ' + JSON.stringify(cssObj).replace(/\"/g,'').replace(/,/g,';');
     }
-    const scrollbar = cssRule('::-webkit-scrollbar', {
-      width: '10px',
-      height: '10px'
+    const scrollbar = cssRule(`${scrollTag}`, {
+      width: settings.scrollbar.width + 'px',
+      height: settings.scrollbar.width + 'px'
     });
-    const scrollbarTrack = cssRule('::-webkit-scrollbar-track', {
+    const scrollbarTrack = cssRule(`${scrollTag}-track`, {
       background: 'transparent',
-      borderRadius: '25px',
+      ["margin-right"]: pad,
+      ["margin-left"]: pad,
+      ["border-radius"]: settings.scrollbar.radius + 'px',
+      ["box-shadow"]: 'inset 0 0 15px #888'
     });
-    const scrollbarThumb = cssRule('::-webkit-scrollbar-thumb', {
-      background: '#444',
-      border: '1px solid #ddd',
-      boxShadow: '0 0 10px rgba(128,128,128,0.3)'
+    const scrollbarThumb = cssRule(`${scrollTag}-thumb`, {
+      background: settings.scrollbar.color,
+      border: `1px solid ${settings.scrollbar.border}`,
+      ["border-radius"]: settings.scrollbar.radius + 'px'
     });
-    sheet.insertRule(scrollbar);
-    sheet.insertRule(scrollbarTrack);
-    sheet.insertRule(scrollbarThumb);
+    const css = document.createElement('style');
+    css.type = 'text/css';
+    css.innerHTML = [
+      scrollbar,
+      scrollbarTrack,
+      scrollbarThumb
+    ].join("\n");
+    document.head.appendChild(css);
   }
 }

@@ -13,5 +13,8 @@ const show = new Slideshow(document.getElementById('slideshow'), {
 const gallery = new PhotoGallery(document.getElementById('photogallery'), {
   direction: 'row',
   padding: 20,
-  color: '#444'
+  color: '#222',
+  scrollbar: {
+    radius: 50
+  }
 });

@@ -116,8 +116,13 @@ class Slideshow {
         root.effects = permit(root.effects, ['fade', 'direction']);
         const effects = root.effects;
         clean(effects, 'fade', 'boolean', 'effects.fade');
-        if (!effects.hasOwnProperty('direction')) effects.direction = 'left';
         clean(effects, 'direction', 'string', 'effects.direction');
+        if (
+          effects.hasOwnProperty('direction')
+          && !['left', 'right', 'top', 'bottom', 'none'].includes(effects.direction)
+        ) {
+          delete effects.direction;
+        }
       }
       return root;
       // helper
