@@ -29,8 +29,7 @@ class Slideshow {
     }
     this.cycle = this.cycle.bind(this);
     this.rotate = this.rotate.bind(this);
-    this.configure(options);
-    this.initialize();
+    this._configure(options);
   }
 
   get node() {
@@ -58,7 +57,12 @@ class Slideshow {
     return this._settings.effects;
   }
 
-  configure(options) {
+  _configure(options) {
+    this._applySettings(options);
+    this._initialize();
+  }
+
+  _applySettings(options) {
     // apply general settings
     const strongOptions = validate(options);
     Object.assign(this._settings, strongOptions);
@@ -84,8 +88,9 @@ class Slideshow {
         break;
       default:
     }
-    
-    // data validation functions
+
+    // HELPER FUNCTIONS
+    // data validation
     function permit(obj, allowed){
       const newObj = JSON.parse(JSON.stringify(obj));
       for(let key in newObj) {
@@ -125,8 +130,8 @@ class Slideshow {
     }
   }
 
-  initialize() {
-    // change parent node into a pinnable position if not
+  _initialize() {
+    // change parent node into a pinnable position if not already
     if (['', 'static'].includes(this.node.style.position)) {
       this.node.style.position = 'relative';
     }

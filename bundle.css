@@ -31,7 +31,8 @@ body {
   margin: 20px;
 }
 
-#slideshow {
+#slideshow,
+#photogallery {
   height: 400px;
   width: 712px;
   border: 1px solid black;
