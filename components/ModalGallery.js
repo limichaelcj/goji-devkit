@@ -8,14 +8,22 @@
   * exit button (absolutely positioned)
 */
 
-export default class ModalGallery {
-  constructor(){
-    this._node = null;
-    this._view = null;
-    this._reel = null;
-    this._images = [];
-    this._current = null;
-    this._border = "1px solid #6495ed";
+class ModalGallery {
+  constructor(node, options = {}){
+    if (!node || !(node instanceof HTMLElement)){
+      throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
+    }
+    this._node = node; // parent node to inject in
+    this._view = document.createElement('div'); // big picture center display
+    this._reel = document.createElement('div'); // holds the images in the gallery
+    this._images = Array.from(node.querySelectorAll('img')); // image nodes
+    this._settings = {
+      color: 'rgba(0,0,0,0.8)',
+      highlight: 'rgba(210,210,210,0.8)'
+    }
+    this._state = {
+      current: null
+    };
     this.keyListener = this.keyListener.bind(this);
   }
 
@@ -31,26 +39,11 @@ export default class ModalGallery {
   get images(){
     return this._images;
   }
+  get settings(){
+    return this._settings;
+  }
   get current(){
-    return this._current;
-  }
-  get border(){
-    return this._border;
-  }
-  set node(node){
-    this._node = node;
-  }
-  set view(view){
-    this._view = view;
-  }
-  set reel(reel){
-    this._reel = reel;
-  }
-  set current(index){
-    this._current = index;
-  }
-  set border(style){
-    this._border = style;
+    return this._state.current;
   }
 
   clearImages(){

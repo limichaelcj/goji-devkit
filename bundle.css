@@ -35,6 +35,9 @@ body {
 #photogallery {
   height: 400px;
   width: 712px;
-  border: 1px solid black;
   box-shadow: 0 0 15px gray;
+}
+
+#slideshow {
+  border: 1px solid black;
 }

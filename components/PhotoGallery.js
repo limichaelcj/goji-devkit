@@ -13,7 +13,9 @@ class PhotoGallery {
         width: 16,
         color: '#222',
         border: '#aaa',
-        radius: 0
+        radius: 0,
+        margin: 0,
+        shadow: 'transparent'
       }
     }
     this._configure(options);
@@ -69,6 +71,8 @@ class PhotoGallery {
         clean(scroll, 'color', 'string', 'scrollbar.color');
         clean(scroll, 'border', 'string', 'scrollbar.border');
         clean(scroll, 'radius', 'number', 'scrollbar.radius');
+        clean(scroll, 'margin', 'number', 'scrollbar.margin');
+        clean(scroll, 'shadow', 'string', 'scrollbar.shadow');
       }
 
       return root;
@@ -130,10 +134,9 @@ class PhotoGallery {
     });
     const scrollbarTrack = cssRule(`${scrollTag}-track`, {
       background: 'transparent',
-      ["margin-right"]: pad,
-      ["margin-left"]: pad,
+      margin: settings.scrollbar.margin + 'px',
       ["border-radius"]: settings.scrollbar.radius + 'px',
-      ["box-shadow"]: 'inset 0 0 15px #888'
+      ["box-shadow"]: `inset 0 0 15px ${settings.scrollbar.shadow}`
     });
     const scrollbarThumb = cssRule(`${scrollTag}-thumb`, {
       background: settings.scrollbar.color,

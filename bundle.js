@@ -12,9 +12,11 @@ const show = new Slideshow(document.getElementById('slideshow'), {
 
 const gallery = new PhotoGallery(document.getElementById('photogallery'), {
   direction: 'row',
-  padding: 20,
-  color: '#222',
+  padding: 40,
+  color: '#f0f0f0',
   scrollbar: {
-    radius: 50
+    color: '#bbb',
+    width: 10,
+    radius: 5
   }
 });
