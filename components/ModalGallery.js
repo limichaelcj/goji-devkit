@@ -1,13 +1,3 @@
-/* DOM STRUCTURE
-
-  modal-gallery
-  - view image
-  - reel images
-  * prev button (absolutely positioned)
-  * next button (absolutely positioned)
-  * exit button (absolutely positioned)
-*/
-
 class ModalGallery {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
@@ -16,7 +6,7 @@ class ModalGallery {
     this._node = node; // parent node to inject in
     this._view = document.createElement('img'); // big picture center display
     this._reel = document.createElement('div'); // holds the images in the gallery
-    this._images = Array.from(node.querySelectorAll('img')); // image nodes
+    this._buffers = [document.createElement('div'), document.createElement('div')];
     this._settings = {
       view: 90,
       reel: '20%',
@@ -24,9 +14,11 @@ class ModalGallery {
       highlight: 'rgba(210,210,210,0.8)'
     };
     this._state = {
-      selected: 0
+      images: [],
+      selected: 0,
+      keyListener: null
     };
-    this.keyListener = this.keyListener.bind(this);
+    this._cycle = this._cycle.bind(this);
     this._configure(options);
   }
 
@@ -40,13 +32,16 @@ class ModalGallery {
     return this._reel;
   }
   get images(){
-    return this._images;
+    return this._state.images;
   }
   get settings(){
     return this._settings;
   }
   get selected(){
     return this._state.selected;
+  }
+  set images(imageNodeArray) {
+    this._state.images = imageNodeArray;
   }
   set selected(index) {
     this._state.selected = index;
@@ -95,11 +90,8 @@ class ModalGallery {
     viewWrapper.appendChild(this.view);
     this.node.appendChild(viewWrapper);
     this.node.appendChild(this.reel);
-    this.images.forEach(elem => {
-      this.reel.appendChild(elem);
-    });
-    const buffers = [document.createElement('div'), document.createElement('div')];
-    buffers.forEach((div, index) => {
+    // reel buffers
+    this._buffers.forEach((div, index) => {
       div.innerHTML = '_';
       var bufferWidth = 100 + (index * 40);
       Object.assign(div.style, {
@@ -108,11 +100,13 @@ class ModalGallery {
         visibility: 'hidden',
       });
     });
-    this.reel.prepend(buffers[0]);
-    this.reel.appendChild(buffers[1]);
+    this.reel.prepend(this._buffers[0]);
+    this.reel.appendChild(this._buffers[1]);
+    // class identifiers
     this.node.classList.add('goji-devkit-modalgallery');
     this.view.classList.add('goji-devkit-modalgallery-view');
     this.reel.classList.add('goji-devkit-modalgallery-reel');
+
     // apply styles
     Object.assign(this.node.style, {
       display: 'flex',
@@ -122,8 +116,10 @@ class ModalGallery {
       left: 0,
       height: '100vh',
       width: '100vw',
-      zIndex: 5,
-      backgroundColor: this.settings.color
+      zIndex: -1,
+      opacity: 0,
+      backgroundColor: this.settings.color,
+      transition: 'opacity 200ms'
     });
     Object.assign(viewWrapper.style, {
       flex: '1 1 80%',
@@ -146,25 +142,80 @@ class ModalGallery {
       alignItems: 'center',
       boxSizing: 'border-box',
       padding: '20px',
-      overflow: 'auto'
+      overflowX: 'auto',
+      overflowY: 'hidden'
     });
-    this.images.forEach((img, index) => {
+  }
+
+  // link open function to img elements in specified class tag in document
+  link(tag){
+    Array.from(document.querySelectorAll(tag)).forEach(elem => {
+      const images = Array.from(elem.querySelectorAll('img'));
+      images.forEach((img, index) => {
+        img.style.cursor = 'pointer';
+        img.onclick = (e) => {
+          e.stopPropagation();
+          this._open(images, index);
+        };
+      });
+    });
+  }
+
+  _open(images, index) {
+    if (this.images.length > 1) this.images = [];
+    for(let i=0; i<images.length; i++){
+      this.images.push(document.createElement('img'));
+    }
+    this.images.forEach((img, i) => {
+      this.reel.insertBefore(img, this._buffers[1]);
+      img.src = images[i].src;
       Object.assign(img.style, {
         height: '100%',
-        marginLeft: index < 1 ? '' : '20px',
+        marginLeft: i < 1 ? '' : '20px',
         cursor: 'pointer',
         border: '1px solid transparent'
       });
       img.onclick = (e) => {
         e.stopPropagation();
-        this.viewImage(index);
+        this._viewImage(i);
+      };
+    });
+    Object.assign(this.node.style, {
+      zIndex: 5,
+      opacity: 1
+    });
+    this._viewImage(index);
+    this.node.focus();
+    const listener = window.addEventListener('keyup', (e) => {
+      e = e || window.event;
+      e.preventDefault();
+      e.stopPropagation();
+      switch(e.keyCode){
+        case 27:
+          this._close();
+          window.removeEventListener('keyup', listener);
+          break;
+        case 37:
+          this._viewImage(this._cycle(this.selected - 1));
+          break;
+        case 39:
+          this._viewImage(this._cycle(this.selected + 1));
+          break;
+        default:
       }
     });
-
-    this.viewImage(0);
   }
 
-  viewImage(index){
+  _close() {
+    Object.assign(this.node.style, {
+      zIndex: -1,
+      opacity: 0
+    });
+    this.images.forEach(img => img.remove());
+    this.images = [];
+  }
+
+  _viewImage(index){
     Object.assign(this.images[this.selected].style, {
       borderColor: 'transparent'
     });
@@ -173,6 +224,17 @@ class ModalGallery {
       borderColor: this.settings.highlight
     });
     this.selected = index;
+    this.images[index].scrollIntoView(true);
+  }
+
+  _cycle(next){
+    if (next > this.images.length - 1){
+      return 0;
+    } else if (next < 0) {
+      return this.images.length - 1;
+    } else {
+      return next;
+    }
   }
 
   //change reel image border
@@ -186,46 +248,9 @@ class ModalGallery {
     return reelImages;
   }
 
-  //click prev/next arrows or arrow keys
-  nextImage(inc){
-    let reel = this.modReelImages({border: "none"});
-    this.stepCurrent(inc);
-    //set image in svg to current image after stepping current
-    this.changeSVGImage(this.view,this.images[this.current]);
-    reel[this.current].style.border = this.border;
-  }
-
-  stepCurrent(inc){
-    var next = this.current + inc;
-    if (next >= this.images.length) next = 0;
-    if (next < 0) next = this.images.length - 1;
-    this.current = next;
-  }
   //svg image helper
   changeSVGImage(node,img){
     node.setAttributeNS("http://www.w3.org/1999/xlink","href",img);
-  }
-
-  //listener
-  addKeyListener(){
-    document.addEventListener('keydown',this.keyListener);
-  }
-  keyListener(e){
-    e = e || window.event;
-    e.stopPropagation();
-    switch(e.keyCode){
-      case 27:
-        this.exitGallery();
-        return;
-      case 37:
-        this.nextImage(-1);
-        return;
-      case 39:
-        this.nextImage(1);
-        return;
-      default:
-        return;
-    }
   }
 
   exitGallery(){
