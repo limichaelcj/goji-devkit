@@ -237,26 +237,4 @@ class ModalGallery {
     }
   }
 
-  //change reel image border
-  modReelImages(style){
-    let reelImages = [].slice.call(this.reel.childNodes);
-    reelImages.forEach((elem)=>{
-      for(let key in style){
-        elem.style[key] = style[key];
-      }
-    });
-    return reelImages;
-  }
-
-  //svg image helper
-  changeSVGImage(node,img){
-    node.setAttributeNS("http://www.w3.org/1999/xlink","href",img);
-  }
-
-  exitGallery(){
-    document.removeEventListener('keydown',this.keyListener);
-    this.node.style.opacity = 0;
-    this.node.style.visibility = "hidden";
-  }
-
 }
