@@ -1,22 +1,25 @@
-/* DOM STRUCTURE
-
-  modal-gallery
-  - view image
-  - reel images
-  * prev button (absolutely positioned)
-  * next button (absolutely positioned)
-  * exit button (absolutely positioned)
-*/
-
-export default class ModalGallery {
-  constructor(){
-    this._node = null;
-    this._view = null;
-    this._reel = null;
-    this._images = [];
-    this._current = null;
-    this._border = "1px solid #6495ed";
-    this.keyListener = this.keyListener.bind(this);
+class ModalGallery {
+  constructor(node, options = {}){
+    if (!node || !(node instanceof HTMLElement)){
+      throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
+    }
+    this._node = node; // parent node to inject in
+    this._view = document.createElement('img'); // big picture center display
+    this._reel = document.createElement('div'); // holds the images in the gallery
+    this._buffers = [document.createElement('div'), document.createElement('div')];
+    this._settings = {
+      view: 90,
+      reel: '20%',
+      color: 'rgba(0,0,0,0.8)',
+      highlight: 'rgba(210,210,210,0.8)'
+    };
+    this._state = {
+      images: [],
+      selected: 0,
+      keyListener: null
+    };
+    this._cycle = this._cycle.bind(this);
+    this._configure(options);
   }
 
   get node(){
@@ -29,187 +32,209 @@ export default class ModalGallery {
     return this._reel;
   }
   get images(){
-    return this._images;
+    return this._state.images;
   }
-  get current(){
-    return this._current;
+  get settings(){
+    return this._settings;
   }
-  get border(){
-    return this._border;
+  get selected(){
+    return this._state.selected;
   }
-  set node(node){
-    this._node = node;
+  set images(imageNodeArray) {
+    this._state.images = imageNodeArray;
   }
-  set view(view){
-    this._view = view;
-  }
-  set reel(reel){
-    this._reel = reel;
-  }
-  set current(index){
-    this._current = index;
-  }
-  set border(style){
-    this._border = style;
+  set selected(index) {
+    this._state.selected = index;
   }
 
-  clearImages(){
-    this._images = [];
-  }
-  addImage(imgSrc){
-    this._images.push(imgSrc);
+  _configure(options) {
+    this._applySettings(options);
+    this._initialize();
   }
 
-  build(node){
-    node.className = 'ModalGallery-main';
-    //view component -- wrapper > svg > image
-    let viewWrapper = document.createElement('div');
-    viewWrapper.className = "ModalGallery-view-wrapper";
-    let viewSVG = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    viewSVG.setAttribute("viewBox","0 0 100 100");
-    viewSVG.setAttribute("preserveAspectRatio","xMidYMid meet");
-    viewSVG.setAttribute("class","ModalGallery-view-svg");
-    let view = document.createElementNS('http://www.w3.org/2000/svg','image');
-    view.setAttribute("class","ModalGallery-view-image");
-    viewSVG.append(view);
-    viewWrapper.append(viewSVG);
-    //create view and reel components
-    let reel = document.createElement('div');
-    let prev = document.createElement('div');
-    let next = document.createElement('div');
-    let exit = document.createElement('div');
-    reel.className = 'ModalGallery-reel';
-    prev.className = 'ModalGallery-btn ModalGallery-prev'
-    next.className = 'ModalGallery-btn ModalGallery-next'
-    exit.className = 'ModalGallery-exit';
-    //button icons
-    let prevIcon = document.createElement('i');
-    let nextIcon = document.createElement('i');
-    let exitIcon = document.createElement('i');
-    prevIcon.className = 'fas fa-angle-left';
-    nextIcon.className = 'fas fa-angle-right';
-    exitIcon.className = 'fas fa-times';
-    prev.append(prevIcon);
-    next.append(nextIcon);
-    exit.append(exitIcon);
-    //button functions
-    prev.onclick = ()=>this.nextImage(-1);
-    next.onclick = ()=>this.nextImage(1);
-    exit.onclick = ()=>this.exitGallery();
-    //append all to parent node
-    node.append(viewWrapper);
-    node.append(reel);
-    node.append(prev);
-    node.append(next);
-    node.append(exit);
-    //store in object data
-    this.node = node;
-    this.view = view;
-    this.reel = reel;
-  }
-
-  //images = array of image paths
-  //first = src path of first image to display
-  open(images,first){
-    let node = this.node;
-    let view = this.view;
-    let reel = this.reel;
-    //clear all previous images
-    while (reel.firstChild){
-      reel.firstChild.remove();
+  _applySettings(options){
+    const strongParams = validate(options);
+    Object.assign(this._settings, strongParams);
+    // HELPER FUNCTIONS
+    // data validation
+    function permit(obj, allowed){
+      const newObj = JSON.parse(JSON.stringify(obj));
+      for(let key in newObj) {
+        if (!allowed.includes(key)) delete newObj[key];
+      }
+      return newObj;
     }
-    //add images to reel
-    //key = image name, val = image src
-    this.clearImages();
-    //build each image
-    let index = 0;
-    images.forEach((image)=>{
-      let img = document.createElement('img');
-      img.dataset.index = index;
-      //add image url to ModalGallery data
-      this.addImage(image);
-      //add image url to DOM element src
-      img.src = image;
-      img.onclick = ()=>{
-        this.modReelImages({border: "none"});
-        img.style.border = this.border;
-        this.changeSVGImage(view,image);
-        this.current = Number(img.dataset.index);
-      };
-      reel.append(img);
-      index++;
-    });
-    //find first clicked image by matching with this.images
-    this.current = this.images.indexOf(first);
-    this.reel.childNodes[this.current].style.border = this.border;
-    //set view image
-    this.changeSVGImage(view,first);
-    //reveal ModalGallery div
-    //visibility for removing clicking response
-    node.style.visibility = "visible";
-    //opacity for smooth transition
-    node.style.opacity = 1;
-    //add key listener
-    this.addKeyListener();
+    function validate(options){
+      const root = permit(options, ['view', 'reel', 'color', 'highlight']);
+      // colors
+      clean(root, 'view', 'number', 'options.view');
+      clean(root, 'reel', 'string', 'options.reel');
+      clean(root, 'color', 'string', 'options.color');
+      clean(root, 'highlight', 'string', 'options.highlight');
+
+      return root;
+      // helper
+      function clean(obj, key, type, name){
+        if (obj.hasOwnProperty(key) && typeof obj[key] != type) {
+          delete obj[key];
+          console.error(`${name} must be of type ${type}`);
+        }
+      }
+    }
   }
 
-  //change reel image border
-  modReelImages(style){
-    let reelImages = [].slice.call(this.reel.childNodes);
-    reelImages.forEach((elem)=>{
-      for(let key in style){
-        elem.style[key] = style[key];
+  _initialize(){
+    const settings = this._settings;
+    // setup DOM element structure
+    const viewWrapper = document.createElement('div');
+    viewWrapper.appendChild(this.view);
+    this.node.appendChild(viewWrapper);
+    this.node.appendChild(this.reel);
+    // reel buffers
+    this._buffers.forEach((div, index) => {
+      div.innerHTML = '_';
+      var bufferWidth = 100 + (index * 40);
+      Object.assign(div.style, {
+        height: '100%',
+        minWidth: '40%',
+        visibility: 'hidden',
+      });
+    });
+    this.reel.prepend(this._buffers[0]);
+    this.reel.appendChild(this._buffers[1]);
+    // class identifiers
+    this.node.classList.add('goji-devkit-modalgallery');
+    this.view.classList.add('goji-devkit-modalgallery-view');
+    this.reel.classList.add('goji-devkit-modalgallery-reel');
+
+    // apply styles
+    Object.assign(this.node.style, {
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      width: '100vw',
+      zIndex: -1,
+      opacity: 0,
+      backgroundColor: this.settings.color,
+      transition: 'opacity 200ms'
+    });
+    Object.assign(viewWrapper.style, {
+      flex: '1 1 80%',
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center'
+    });
+    Object.assign(this.view.style, {
+      height: this.settings.view + '%',
+      width: this.settings.view + '%',
+      objectFit: 'contain'
+    });
+    Object.assign(this.reel.style, {
+      flex: `0 0 ${this.settings.reel}`,
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      boxSizing: 'border-box',
+      padding: '20px',
+      overflowX: 'auto',
+      overflowY: 'hidden'
+    });
+  }
+
+  // link open function to img elements in specified class tag in document
+  link(tag){
+    Array.from(document.querySelectorAll(tag)).forEach(elem => {
+      const images = Array.from(elem.querySelectorAll('img'));
+      images.forEach((img, index) => {
+        img.style.cursor = 'pointer';
+        img.onclick = (e) => {
+          e.stopPropagation();
+          this._open(images, index);
+        };
+      });
+    });
+  }
+
+  _open(images, index) {
+    if (this.images.length > 1) this.images = [];
+    for(let i=0; i<images.length; i++){
+      this.images.push(document.createElement('img'));
+    }
+    this.images.forEach((img, i) => {
+      this.reel.insertBefore(img, this._buffers[1]);
+      img.src = images[i].src;
+      Object.assign(img.style, {
+        height: '100%',
+        marginLeft: i < 1 ? '' : '20px',
+        cursor: 'pointer',
+        border: '1px solid transparent'
+      });
+      img.onclick = (e) => {
+        e.stopPropagation();
+        this._viewImage(i);
+      };
+    });
+    Object.assign(this.node.style, {
+      zIndex: 5,
+      opacity: 1
+    });
+    this._viewImage(index);
+    this.node.focus();
+    const listener = window.addEventListener('keyup', (e) => {
+      e = e || window.event;
+      e.preventDefault();
+      e.stopPropagation();
+      switch(e.keyCode){
+        case 27:
+          this._close();
+          window.removeEventListener('keyup', listener);
+          break;
+        case 37:
+          this._viewImage(this._cycle(this.selected - 1));
+          break;
+        case 39:
+          this._viewImage(this._cycle(this.selected + 1));
+          break;
+        default:
       }
     });
-    return reelImages;
   }
 
-  //click prev/next arrows or arrow keys
-  nextImage(inc){
-    let reel = this.modReelImages({border: "none"});
-    this.stepCurrent(inc);
-    //set image in svg to current image after stepping current
-    this.changeSVGImage(this.view,this.images[this.current]);
-    reel[this.current].style.border = this.border;
+  _close() {
+    Object.assign(this.node.style, {
+      zIndex: -1,
+      opacity: 0
+    });
+    this.images.forEach(img => img.remove());
+    this.images = [];
   }
 
-  stepCurrent(inc){
-    var next = this.current + inc;
-    if (next >= this.images.length) next = 0;
-    if (next < 0) next = this.images.length - 1;
-    this.current = next;
-  }
-  //svg image helper
-  changeSVGImage(node,img){
-    node.setAttributeNS("http://www.w3.org/1999/xlink","href",img);
+  _viewImage(index){
+    Object.assign(this.images[this.selected].style, {
+      borderColor: 'transparent'
+    });
+    this.view.src = this.images[index].src;
+    Object.assign(this.images[index].style, {
+      borderColor: this.settings.highlight
+    });
+    this.selected = index;
+    this.images[index].scrollIntoView(true);
   }
 
-  //listener
-  addKeyListener(){
-    document.addEventListener('keydown',this.keyListener);
-  }
-  keyListener(e){
-    e = e || window.event;
-    e.stopPropagation();
-    switch(e.keyCode){
-      case 27:
-        this.exitGallery();
-        return;
-      case 37:
-        this.nextImage(-1);
-        return;
-      case 39:
-        this.nextImage(1);
-        return;
-      default:
-        return;
+  _cycle(next){
+    if (next > this.images.length - 1){
+      return 0;
+    } else if (next < 0) {
+      return this.images.length - 1;
+    } else {
+      return next;
     }
-  }
-
-  exitGallery(){
-    document.removeEventListener('keydown',this.keyListener);
-    this.node.style.opacity = 0;
-    this.node.style.visibility = "hidden";
   }
 
 }
