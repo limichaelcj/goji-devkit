@@ -64,8 +64,8 @@ class Slideshow {
 
   _applySettings(options) {
     // apply general settings
-    const strongOptions = validate(options);
-    Object.assign(this._settings, strongOptions);
+    const strongParams = validate(options);
+    Object.assign(this._settings, strongParams);
 
     // apply effects settings
     const effects = this.effects;

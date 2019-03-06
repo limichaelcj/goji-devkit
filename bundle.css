@@ -32,7 +32,8 @@ body {
 }
 
 #slideshow,
-#photogallery {
+#photogallery,
+#modalgallery {
   height: 400px;
   width: 712px;
   box-shadow: 0 0 15px gray;

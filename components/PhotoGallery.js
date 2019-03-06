@@ -37,12 +37,12 @@ class PhotoGallery {
 
   _applySettings(options){
     // apply general settings
-    const strongOptions = validate(options);
-    if (strongOptions.hasOwnProperty('scrollbar')) {
-      Object.assign(this._settings.scrollbar, strongOptions.scrollbar);
-      delete strongOptions.scrollbar;
+    const strongParams = validate(options);
+    if (strongParams.hasOwnProperty('scrollbar')) {
+      Object.assign(this._settings.scrollbar, strongParams.scrollbar);
+      delete strongParams.scrollbar;
     }
-    Object.assign(this._settings, strongOptions);
+    Object.assign(this._settings, strongParams);
     // HELPER FUNCTIONS
     // data validation
     function permit(obj, allowed){

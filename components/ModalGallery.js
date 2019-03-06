@@ -20,11 +20,12 @@ class ModalGallery {
     this._settings = {
       color: 'rgba(0,0,0,0.8)',
       highlight: 'rgba(210,210,210,0.8)'
-    }
+    };
     this._state = {
       current: null
     };
     this.keyListener = this.keyListener.bind(this);
+    this._configure(options);
   }
 
   get node(){
@@ -46,11 +47,78 @@ class ModalGallery {
     return this._state.current;
   }
 
-  clearImages(){
-    this._images = [];
+  _configure(options) {
+    this._applySettings(options);
+    this._initialize();
   }
-  addImage(imgSrc){
-    this._images.push(imgSrc);
+
+  _applySettings(options){
+    const strongParams = validate(options);
+    Object.assign(this._settings, strongParams);
+    // HELPER FUNCTIONS
+    // data validation
+    function permit(obj, allowed){
+      const newObj = JSON.parse(JSON.stringify(obj));
+      for(let key in newObj) {
+        if (!allowed.includes(key)) delete newObj[key];
+      }
+      return newObj;
+    }
+    function validate(options){
+      const root = permit(options, ['color', 'highlight']);
+      // colors
+      clean(root, 'color', 'string', 'options.color');
+      clean(root, 'highlight', 'string', 'options.highlight');
+
+      return root;
+      // helper
+      function clean(obj, key, type, name){
+        if (obj.hasOwnProperty(key) && typeof obj[key] != type) {
+          delete obj[key];
+          console.error(`${name} must be of type ${type}`);
+        }
+      }
+    }
+  }
+
+  _initialize(){
+    const settings = this._settings;
+    // setup DOM element structure
+    this.node.appendChild(this.view);
+    this.node.appendChild(this.reel);
+    this.images.forEach(elem => {
+      this.reel.appendChild(elem);
+    });
+    this.node.classList.add('goji-devkit-modalgallery');
+    this.view.classList.add('goji-devkit-modalgallery-view');
+    this.reel.classList.add('goji-devkit-modalgallery-reel');
+    // apply styles
+    Object.assign(this.node.style, {
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      width: '100vw',
+      zIndex: 5,
+      backgroundColor: this.settings.color
+    });
+    Object.assign(this.view.style, {
+      flex: '0 0 80%',
+      display: 'block',
+    });
+    Object.assign(this.reel.style, {
+      flex: '0 0 20%',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      boxSizing: 'border-box',
+      margin: '10px',
+      overflow: 'auto'
+    });
   }
 
   build(node){

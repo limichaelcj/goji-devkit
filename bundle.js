@@ -20,3 +20,5 @@ const gallery = new PhotoGallery(document.getElementById('photogallery'), {
     radius: 5
   }
 });
+
+const modal = new ModalGallery(document.getElementById('modalgallery'));
