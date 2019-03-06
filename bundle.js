@@ -21,4 +21,6 @@ const gallery = new PhotoGallery(document.getElementById('photogallery'), {
   }
 });
 
-const modal = new ModalGallery(document.getElementById('modalgallery'));
+const modal = new ModalGallery(document.getElementById('modalgallery'), {
+  highlight: 'dodgerblue'
+});

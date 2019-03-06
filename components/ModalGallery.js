@@ -14,15 +14,17 @@ class ModalGallery {
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
     }
     this._node = node; // parent node to inject in
-    this._view = document.createElement('div'); // big picture center display
+    this._view = document.createElement('img'); // big picture center display
     this._reel = document.createElement('div'); // holds the images in the gallery
     this._images = Array.from(node.querySelectorAll('img')); // image nodes
     this._settings = {
+      view: 90,
+      reel: '20%',
       color: 'rgba(0,0,0,0.8)',
       highlight: 'rgba(210,210,210,0.8)'
     };
     this._state = {
-      current: null
+      selected: 0
     };
     this.keyListener = this.keyListener.bind(this);
     this._configure(options);
@@ -43,8 +45,11 @@ class ModalGallery {
   get settings(){
     return this._settings;
   }
-  get current(){
-    return this._state.current;
+  get selected(){
+    return this._state.selected;
+  }
+  set selected(index) {
+    this._state.selected = index;
   }
 
   _configure(options) {
@@ -65,8 +70,10 @@ class ModalGallery {
       return newObj;
     }
     function validate(options){
-      const root = permit(options, ['color', 'highlight']);
+      const root = permit(options, ['view', 'reel', 'color', 'highlight']);
       // colors
+      clean(root, 'view', 'number', 'options.view');
+      clean(root, 'reel', 'string', 'options.reel');
       clean(root, 'color', 'string', 'options.color');
       clean(root, 'highlight', 'string', 'options.highlight');
 
@@ -84,11 +91,25 @@ class ModalGallery {
   _initialize(){
     const settings = this._settings;
     // setup DOM element structure
-    this.node.appendChild(this.view);
+    const viewWrapper = document.createElement('div');
+    viewWrapper.appendChild(this.view);
+    this.node.appendChild(viewWrapper);
     this.node.appendChild(this.reel);
     this.images.forEach(elem => {
       this.reel.appendChild(elem);
     });
+    const buffers = [document.createElement('div'), document.createElement('div')];
+    buffers.forEach((div, index) => {
+      div.innerHTML = '_';
+      var bufferWidth = 100 + (index * 40);
+      Object.assign(div.style, {
+        height: '100%',
+        minWidth: '40%',
+        visibility: 'hidden',
+      });
+    });
+    this.reel.prepend(buffers[0]);
+    this.reel.appendChild(buffers[1]);
     this.node.classList.add('goji-devkit-modalgallery');
     this.view.classList.add('goji-devkit-modalgallery-view');
     this.reel.classList.add('goji-devkit-modalgallery-reel');
@@ -104,114 +125,54 @@ class ModalGallery {
       zIndex: 5,
       backgroundColor: this.settings.color
     });
+    Object.assign(viewWrapper.style, {
+      flex: '1 1 80%',
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center'
+    });
     Object.assign(this.view.style, {
-      flex: '0 0 80%',
-      display: 'block',
+      height: this.settings.view + '%',
+      width: this.settings.view + '%',
+      objectFit: 'contain'
     });
     Object.assign(this.reel.style, {
-      flex: '0 0 20%',
+      flex: `0 0 ${this.settings.reel}`,
       width: '100%',
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       boxSizing: 'border-box',
-      margin: '10px',
+      padding: '20px',
       overflow: 'auto'
     });
-  }
-
-  build(node){
-    node.className = 'ModalGallery-main';
-    //view component -- wrapper > svg > image
-    let viewWrapper = document.createElement('div');
-    viewWrapper.className = "ModalGallery-view-wrapper";
-    let viewSVG = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    viewSVG.setAttribute("viewBox","0 0 100 100");
-    viewSVG.setAttribute("preserveAspectRatio","xMidYMid meet");
-    viewSVG.setAttribute("class","ModalGallery-view-svg");
-    let view = document.createElementNS('http://www.w3.org/2000/svg','image');
-    view.setAttribute("class","ModalGallery-view-image");
-    viewSVG.append(view);
-    viewWrapper.append(viewSVG);
-    //create view and reel components
-    let reel = document.createElement('div');
-    let prev = document.createElement('div');
-    let next = document.createElement('div');
-    let exit = document.createElement('div');
-    reel.className = 'ModalGallery-reel';
-    prev.className = 'ModalGallery-btn ModalGallery-prev'
-    next.className = 'ModalGallery-btn ModalGallery-next'
-    exit.className = 'ModalGallery-exit';
-    //button icons
-    let prevIcon = document.createElement('i');
-    let nextIcon = document.createElement('i');
-    let exitIcon = document.createElement('i');
-    prevIcon.className = 'fas fa-angle-left';
-    nextIcon.className = 'fas fa-angle-right';
-    exitIcon.className = 'fas fa-times';
-    prev.append(prevIcon);
-    next.append(nextIcon);
-    exit.append(exitIcon);
-    //button functions
-    prev.onclick = ()=>this.nextImage(-1);
-    next.onclick = ()=>this.nextImage(1);
-    exit.onclick = ()=>this.exitGallery();
-    //append all to parent node
-    node.append(viewWrapper);
-    node.append(reel);
-    node.append(prev);
-    node.append(next);
-    node.append(exit);
-    //store in object data
-    this.node = node;
-    this.view = view;
-    this.reel = reel;
-  }
-
-  //images = array of image paths
-  //first = src path of first image to display
-  open(images,first){
-    let node = this.node;
-    let view = this.view;
-    let reel = this.reel;
-    //clear all previous images
-    while (reel.firstChild){
-      reel.firstChild.remove();
-    }
-    //add images to reel
-    //key = image name, val = image src
-    this.clearImages();
-    //build each image
-    let index = 0;
-    images.forEach((image)=>{
-      let img = document.createElement('img');
-      img.dataset.index = index;
-      //add image url to ModalGallery data
-      this.addImage(image);
-      //add image url to DOM element src
-      img.src = image;
-      img.onclick = ()=>{
-        this.modReelImages({border: "none"});
-        img.style.border = this.border;
-        this.changeSVGImage(view,image);
-        this.current = Number(img.dataset.index);
-      };
-      reel.append(img);
-      index++;
+    this.images.forEach((img, index) => {
+      Object.assign(img.style, {
+        height: '100%',
+        marginLeft: index < 1 ? '' : '20px',
+        cursor: 'pointer',
+        border: '1px solid transparent'
+      });
+      img.onclick = (e) => {
+        e.stopPropagation();
+        this.viewImage(index);
+      }
     });
-    //find first clicked image by matching with this.images
-    this.current = this.images.indexOf(first);
-    this.reel.childNodes[this.current].style.border = this.border;
-    //set view image
-    this.changeSVGImage(view,first);
-    //reveal ModalGallery div
-    //visibility for removing clicking response
-    node.style.visibility = "visible";
-    //opacity for smooth transition
-    node.style.opacity = 1;
-    //add key listener
-    this.addKeyListener();
+
+    this.viewImage(0);
+  }
+
+  viewImage(index){
+    Object.assign(this.images[this.selected].style, {
+      borderColor: 'transparent'
+    });
+    this.view.src = this.images[index].src;
+    Object.assign(this.images[index].style, {
+      borderColor: this.settings.highlight
+    });
+    this.selected = index;
   }
 
   //change reel image border
