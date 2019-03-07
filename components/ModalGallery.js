@@ -1,4 +1,4 @@
-export default class ModalGallery {
+class ModalGallery {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
@@ -238,3 +238,4 @@ export default class ModalGallery {
   }
 
 }
+ export default ModalGallery;

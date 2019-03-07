@@ -1,4 +1,4 @@
-export default function allowDrag(elem){
+function allowDrag(elem){
   var ox=0,oy=0,cx=0,cy=0;
   //set the elements mousedown functionality(html)
   elem.onmousedown = dragMouseDown;

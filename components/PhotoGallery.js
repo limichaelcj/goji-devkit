@@ -1,4 +1,4 @@
-export default class PhotoGallery {
+class PhotoGallery {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
@@ -153,3 +153,5 @@ export default class PhotoGallery {
     document.head.appendChild(css);
   }
 }
+
+export default PhotoGallery;

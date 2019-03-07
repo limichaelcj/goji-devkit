@@ -1,4 +1,4 @@
-export default class Slideshow {
+class Slideshow {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
@@ -194,3 +194,5 @@ export default class Slideshow {
     }
   }
 }
+
+export default Slideshow;
