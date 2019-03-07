@@ -1,5 +1,5 @@
-exports = module.exports = {
-  dragElement: require('./dragElement'),
-  smoothScroll: require('./smoothScroll'),
-  scrollFade: require('./scrollFade')
-}
+const dragElement = require('./dragElement');
+const smoothScroll = require('./smoothScroll');
+const scrollFade = require('./scrollFade');
+
+module.exports = { dragElement, smoothScroll, scrollFade };

@@ -1,6 +1,6 @@
-exports = module.exports = {
-  Slideshow: require('./Slideshow'),
-  PhotoGallery: require('./PhotoGallery'),
-  ModalGallery: require('./ModalGallery'),
-  GridLayout: require('./GridLayout')
-}
+const Slideshow = require('./Slideshow');
+const PhotoGallery = require('./PhotoGallery');
+const ModalGallery = require('./ModalGallery');
+const GridLayout = require('./GridLayout');
+
+module.exports = { Slideshow, PhotoGallery, ModalGallery, GridLayout };

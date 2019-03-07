@@ -1,5 +1,4 @@
-exports = module.exports = {
-  components: require('./components/index'),
-  ui: require('./ui/index'),
-  ux: require('./ux/index')
-}
+const components = require('./components/index');
+const ux = require('./ux/index');
+
+module.exports = { components, ux };
