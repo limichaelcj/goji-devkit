@@ -195,4 +195,4 @@ class Slideshow {
   }
 }
 
-export default Slideshow;
+module.exports = Slideshow;

@@ -105,4 +105,4 @@ class GridLayout {
 
 }
 
-export default GridLayout;
+module.exports = GridLayout;

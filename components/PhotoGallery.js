@@ -154,4 +154,4 @@ class PhotoGallery {
   }
 }
 
-export default PhotoGallery;
+module.exports = PhotoGallery;

@@ -1,4 +1,4 @@
-function allowDrag(elem){
+const allowDrag = function(elem){
   var ox=0,oy=0,cx=0,cy=0;
   //set the elements mousedown functionality(html)
   elem.onmousedown = dragMouseDown;
@@ -33,4 +33,4 @@ function allowDrag(elem){
   }
 }
 
-export default allowDrag;
+module.exports = allowDrag;

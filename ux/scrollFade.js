@@ -1,6 +1,6 @@
 /* Requires jQuery */
 
-function setupScrollFade(selector,exclude,className,install=true){
+const setupScrollFade = function(selector,exclude,className,install=true){
   if (install) $(document).on('scroll', scrollFade);
   else $(document).off('scroll', scrollFade);
 
@@ -22,4 +22,4 @@ function setupScrollFade(selector,exclude,className,install=true){
   }
 }
 
-export default setupScrollFade;
+module.exports = setupScrollFade;

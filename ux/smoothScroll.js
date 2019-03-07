@@ -1,4 +1,4 @@
-function smoothScroll(node) {
+const smoothScroll = function(node) {
     var startY = currentYPosition();
     var stopY = elmYPosition(node);
     var distance = stopY > startY ? stopY - startY : startY - stopY;
@@ -42,4 +42,4 @@ function smoothScroll(node) {
     }
 }
 
-export default smoothScroll;
+module.exports = smoothScroll;

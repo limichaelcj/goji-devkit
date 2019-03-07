@@ -238,4 +238,5 @@ class ModalGallery {
   }
 
 }
- export default ModalGallery;
+
+module.exports = ModalGallery;
