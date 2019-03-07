@@ -2,10 +2,12 @@
 ###### Flexible Web Development Components and Tools
 
 
-*Interactive Web Components*
+*Web Components*
+
+- **Slideshow.js**: Display images in a customizable slideshow.
+- **PhotoGallery.js**: A customizable photo reel.
+- **ModalGallery.js**: Click on images in a set of html image nodes to bring up a modal for a closer look.
 - **GridLayout.js**: Organize page elements in a customized grid.
-- **ModalGallery.js**: View a gallery of images that pop up into a modal when clicked.
-- **PhotoGallery.js**: An customizable photo reel.
 
 *Web Tools*
 - **dragElement.js**: Select specific DOM elements to inject draggable code.
