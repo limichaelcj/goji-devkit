@@ -1,4 +1,4 @@
-class PhotoGallery {
+export default class PhotoGallery {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')

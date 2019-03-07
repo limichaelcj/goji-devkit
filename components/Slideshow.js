@@ -1,4 +1,4 @@
-class Slideshow {
+export default class Slideshow {
   constructor(node, options = {}){
     if (!node || !(node instanceof HTMLElement)){
       throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
