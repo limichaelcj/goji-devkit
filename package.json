@@ -1,6 +1,6 @@
 {
   "name": "goji-devkit",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "simple and flexible web development tools",
   "main": "index.js",
   "scripts": {
