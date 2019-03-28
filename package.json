@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/mcli830/goji-devkit/issues"
   },
-  "homepage": "https://github.com/mcli830/goji-devkit#readme"
+  "homepage": "https://github.com/mcli830/goji-devkit#readme",
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
 }

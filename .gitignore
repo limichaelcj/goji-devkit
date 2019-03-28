@@ -1,5 +1,6 @@
-node_modules
+node_modules/
 favicon.ico
 index.html
 bundle.js
 bundle.css
+test/
