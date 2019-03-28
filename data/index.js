@@ -1,3 +1,3 @@
-const pickRandom = require('./pickRandom');
+const pickOne = require('./pickOne');
 
-module.exports = { pickRandom };
+module.exports = { pickOne };
