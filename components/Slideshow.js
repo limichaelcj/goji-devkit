@@ -27,8 +27,8 @@ class Slideshow {
       current: 0, // current slide
       intervalInstance: null,
     }
-    this.cycle = this.cycle.bind(this);
-    this.rotate = this.rotate.bind(this);
+    this._cycle = this._cycle.bind(this);
+    this._rotate = this._rotate.bind(this);
     this._configure(options);
   }
 
@@ -173,22 +173,25 @@ class Slideshow {
     this.slides.slice(1).forEach(slide => {
       Object.assign(slide.style, this.rotation[2]);
     });
+  }
+
+  start(){
     // initialize rotation interval call
     if (this.slides.length > 1) {
-      this._state.intervalInstance = setInterval(this.rotate, this.interval);
+      this._state.intervalInstance = setInterval(this._rotate, this.interval);
     }
   }
 
-  cycle(index) {
+  _cycle(index) {
     let last = this.slides.length - 1;
     return index < 0 ? last : index > last ? 0 : index;
   }
 
-  rotate(next = this.cycle(this.current + 1)) {
+  _rotate(next = this._cycle(this.current + 1)) {
     this._state.current = next;
     for(let i=0; i<3; i++){
       Object.assign(
-        this.slides[this.cycle(this.current + i - 1)].style,
+        this.slides[this._cycle(this.current + i - 1)].style,
         this.rotation[i]
       );
     }
