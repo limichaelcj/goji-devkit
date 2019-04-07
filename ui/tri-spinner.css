@@ -17,7 +17,7 @@
   position: absolute;
   background: transparent;
   transform-origin: 50% 50%;
-  animation: goji-pulse 2s cubic-bezier(.9,.1,.32,.68) infinite forwards;
+  animation: tri-pulse 2s cubic-bezier(.9,.1,.32,.68) infinite forwards;
 }
 
 .tri-spinner:before {
