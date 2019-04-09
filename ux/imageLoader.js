@@ -22,7 +22,6 @@ function imageLoader(container, options = {}){
     width: pxToNum(containerComputed.width),
     min: pxToNum(containerComputed.fontSize) * 5
   }
-  console.log(pxToNum(container.style.height) ? 'true' : 'false');
   // create style change object if size change is needed
   if (containerSize.height < containerSize.min || containerSize.width < containerSize.min) {
     settings._containerSizeChange = {
