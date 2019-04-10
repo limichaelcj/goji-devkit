@@ -1,5 +1,4 @@
 // requires babel-polyfill for clientside usage of promises
-require('babel-polyfill')
 
 function imageLoader(container, options = {}){
   // set options
