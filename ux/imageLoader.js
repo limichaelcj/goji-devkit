@@ -1,14 +1,14 @@
-// depends on babel-polyfill when using babel and webpack
-// require('babel-polyfill');
-
 function imageLoader(container, options = {}){
   // set options
   const settings = {
     spinner: options.spinner || '<div class="spinner"></div>',
     logs: options.logs || false,
     timeout: options.timeout || 10000,
+    babel: options.babel || false,
     _containerSizeChange: false
   }
+  // require babel-polyfill package if transpiled with babel for client side
+  if (settings.babel) require('babel-polyfill');
   // get html elements
   const images = Array.from(container.querySelectorAll('img'));
   const children = Array.from(container.children);
