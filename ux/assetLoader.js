@@ -10,19 +10,19 @@ function assetLoader(options = {}){
     timeout: options.timeout || 10000,
     _containerSizeChange: false
   }
-  // get html elements
+  // clean data
   if (typeof settings.selector === 'string') settings.selector = [settings.selector];
+  const container = settings.container;
+  // get html elements
   const assets = [];
   settings.selector.forEach(tag => {
     assets.concat(Array.from(container.querySelectorAll(tag)));
   })
-  const container = settings.container;
   const children = Array.from(container.children);
   // remove children from display
   const originalDisplays = children.map(elem => elem.style.display);
   children.forEach(elem => elem.style.display = 'none');
   // test if container size is dependent upon children
-  const container = settings.container;
   const containerComputed = window.getComputedStyle(container);
   const containerSize = {
     height: pxToNum(containerComputed.height),
