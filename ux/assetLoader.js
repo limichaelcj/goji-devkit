@@ -13,7 +13,7 @@ function assetLoader(options = {}){
   // get html elements
   if (settings.selector instanceof String) settings.selector = [settings.selector];
   const assets = [];
-  selector.forEach(tag => {
+  settings.selector.forEach(tag => {
     assets.concat(Array.from(container.querySelectorAll(tag)));
   })
   const children = Array.from(container.children);
