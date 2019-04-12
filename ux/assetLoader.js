@@ -16,11 +16,13 @@ function assetLoader(options = {}){
   settings.selector.forEach(tag => {
     assets.concat(Array.from(container.querySelectorAll(tag)));
   })
+  const container = settings.container;
   const children = Array.from(container.children);
   // remove children from display
   const originalDisplays = children.map(elem => elem.style.display);
   children.forEach(elem => elem.style.display = 'none');
   // test if container size is dependent upon children
+  const container = settings.container;
   const containerComputed = window.getComputedStyle(container);
   const containerSize = {
     height: pxToNum(containerComputed.height),
