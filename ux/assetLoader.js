@@ -3,15 +3,16 @@
 function assetLoader(container, options = {}){
   // set options
   const settings = {
-    selector: option.selector || ['img'],
+    selector: options.selector || ['img'],
     spinner: options.spinner || '<div class="spinner"></div>',
     logs: options.logs || false,
     timeout: options.timeout || 10000,
     _containerSizeChange: false
   }
   // get html elements
+  if (settings.selector instanceof String) settings.selector = [settings.selector];
   const assets = [];
-  selectors.forEach(tag => {
+  selector.forEach(tag => {
     assets.concat(Array.from(container.querySelectorAll(tag)));
   })
   const children = Array.from(container.children);
