@@ -5,8 +5,8 @@ const smoothScrollJQuery = require('./smoothScroll');
 const scrollFade = require('./scrollFade');
 
 module.exports = {
+  assetLoader,
   dragElement,
-  imageLoader,
   smoothScroll,
   smoothScrollJQuery,
   scrollFade
