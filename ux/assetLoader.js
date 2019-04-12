@@ -67,19 +67,14 @@ function assetLoader(options = {}){
   const startTime = Date.now();
   // promises to keep track on each image element's onload completion
   const promises = assets.map((asset,index,arr) => new Promise((resolve, reject) => {
-    if (asset.complete) {
+    let loadTimeout = setTimeout(()=>{
+      if (settings.logs) console.warn(`Image timeout [${index+1}/${arr.length}] (${settings.timeout}ms)`);
+      resolve(false);
+    }, settings.timeout);
+    asset.onload = () => {
       if (settings.logs) console.log(`%c Image loaded [${index+1}/${arr.length}] (${Date.now() - startTime}ms)`, 'color: #4CAF50');
+      clearTimeout(loadTimeout);
       resolve(true);
-    } else {
-      let loadTimeout = setTimeout(()=>{
-        if (settings.logs) console.warn(`Image timeout [${index+1}/${arr.length}] (${settings.timeout}ms)`);
-        resolve(false);
-      }, settings.timeout);
-      asset.onload = () => {
-        if (settings.logs) console.log(`%c Image loaded [${index+1}/${arr.length}] (${Date.now() - startTime}ms)`, 'color: #4CAF50');
-        clearTimeout(loadTimeout);
-        resolve(true);
-      }
     }
   }));
   // returns a thenable promise after all assets loaded
