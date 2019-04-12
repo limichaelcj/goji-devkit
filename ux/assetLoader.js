@@ -14,9 +14,9 @@ function assetLoader(options = {}){
   if (typeof settings.selector === 'string') settings.selector = [settings.selector];
   const container = settings.container;
   // get html elements
-  const assets = [];
+  var assets = [];
   settings.selector.forEach(tag => {
-    assets.concat(Array.from(container.querySelectorAll(tag)));
+    assets = assets.concat(Array.from(container.querySelectorAll(tag)));
   })
   const children = Array.from(container.children);
   // remove children from display
@@ -78,7 +78,7 @@ function assetLoader(options = {}){
     }
   }));
   // returns a thenable promise after all assets loaded
-  return Promise.all(promises).then(async (results)=>{
+  return Promise.all(promises).then(results=>{
     if (settings.logs) {
       let numLoaded = results.filter(loaded => loaded === true).length;
       let loadTime = results.every(loaded => loaded === true)
@@ -90,30 +90,35 @@ function assetLoader(options = {}){
     // fade out spinner
     spinner.style.transition = '500ms cubic-bezier(.5,-1,.8,0)';
     spinner.style.opacity = 0;
-    spinner.style.transform = 'scale(0)'
-    await sleep(500);
-    spinner.remove();
-    // hide container, add contents, fade in
-    container.style.opacity = 0;
-    await sleep(10);
-    // revert container size changes
-    if (settings._containerSizeChange) {
-      Object.assign(container.style, settings._containerSizeChange.original);
-    }
-    // return children contents to container
-    children.forEach((elem,index) => {
-      elem.style.display = originalDisplays[index];
-    });
-    await sleep(10);
-    container.style.transition = '1s';
-    container.style.opacity = originalOpacity;
-    await sleep(1000);
-    container.style.transition = originalTransition;
-    return 200;
+    spinner.style.transform = 'scale(0)';
+    // simulate async/await with chain setTimeout functions
+    delayFunction(500, ()=>{
+      spinner.remove();
+      // hide container, add contents, fade in
+      container.style.opacity = 0;
+      delayFunction(20, ()=>{
+        // revert container size changes
+        if (settings._containerSizeChange) {
+          Object.assign(container.style, settings._containerSizeChange.original);
+        }
+        // return children contents to container
+        children.forEach((elem,index) => {
+          elem.style.display = originalDisplays[index];
+        });
+        delayFunction(20, ()=>{
+          container.style.transition = '1s';
+          container.style.opacity = originalOpacity;
+          delayFunction(1000, ()=>{
+            container.style.transition = originalTransition;
+            return 200;
+          })
+        })
+      })
+    })
   });
   // helper
-  function sleep(ms){
-    return new Promise(resolve => setTimeout(resolve, ms));
+  function delayFunction(ms, cb){
+    setTimeout(cb, ms);
   }
   function pxToNum(pxStr){
     return parseFloat(pxStr.replace('px', ''), 10);
