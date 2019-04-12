@@ -1,15 +1,19 @@
 // requires babel-polyfill for clientside usage of promises
 
-function imageLoader(container, options = {}){
+function assetLoader(container, options = {}){
   // set options
   const settings = {
+    selector: option.selector || ['img'],
     spinner: options.spinner || '<div class="spinner"></div>',
     logs: options.logs || false,
     timeout: options.timeout || 10000,
     _containerSizeChange: false
   }
   // get html elements
-  const images = Array.from(container.querySelectorAll('img'));
+  const assets = [];
+  selectors.forEach(tag => {
+    assets.concat(Array.from(container.querySelectorAll(tag)));
+  })
   const children = Array.from(container.children);
   // remove children from display
   const originalDisplays = children.map(elem => elem.style.display);
@@ -58,18 +62,23 @@ function imageLoader(container, options = {}){
   // for logging
   const startTime = Date.now();
   // promises to keep track on each image element's onload completion
-  const promises = images.map((img,index,arr) => new Promise((resolve, reject) => {
-    let loadTimeout = setTimeout(()=>{
-      if (settings.logs) console.warn(`Image timeout [${index+1}/${arr.length}] (${settings.timeout}ms)`);
-      resolve(false);
-    }, settings.timeout);
-    img.onload = () => {
+  const promises = assets.map((asset,index,arr) => new Promise((resolve, reject) => {
+    if (asset.complete) {
       if (settings.logs) console.log(`%c Image loaded [${index+1}/${arr.length}] (${Date.now() - startTime}ms)`, 'color: #4CAF50');
-      clearTimeout(loadTimeout);
       resolve(true);
+    } else {
+      let loadTimeout = setTimeout(()=>{
+        if (settings.logs) console.warn(`Image timeout [${index+1}/${arr.length}] (${settings.timeout}ms)`);
+        resolve(false);
+      }, settings.timeout);
+      asset.onload = () => {
+        if (settings.logs) console.log(`%c Image loaded [${index+1}/${arr.length}] (${Date.now() - startTime}ms)`, 'color: #4CAF50');
+        clearTimeout(loadTimeout);
+        resolve(true);
+      }
     }
   }));
-  // returns a thenable promise after all images loaded
+  // returns a thenable promise after all assets loaded
   return Promise.all(promises).then(async (results)=>{
     if (settings.logs) {
       let numLoaded = results.filter(loaded => loaded === true).length;
