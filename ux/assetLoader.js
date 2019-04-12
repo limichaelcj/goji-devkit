@@ -1,8 +1,9 @@
 // requires babel-polyfill for clientside usage of promises
 
-function assetLoader(container, options = {}){
+function assetLoader(options = {}){
   // set options
   const settings = {
+    container: options.scope || document.body,
     selector: options.selector || ['img'],
     spinner: options.spinner || '<div class="spinner"></div>',
     logs: options.logs || false,
