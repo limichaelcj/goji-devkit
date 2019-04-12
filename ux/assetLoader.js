@@ -11,7 +11,7 @@ function assetLoader(options = {}){
     _containerSizeChange: false
   }
   // get html elements
-  if (settings.selector instanceof String) settings.selector = [settings.selector];
+  if (typeof settings.selector === 'string') settings.selector = [settings.selector];
   const assets = [];
   settings.selector.forEach(tag => {
     assets.concat(Array.from(container.querySelectorAll(tag)));
