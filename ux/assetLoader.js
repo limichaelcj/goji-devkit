@@ -123,4 +123,4 @@ function assetLoader(options = {}){
   }
 }
 
-module.exports = imageLoader;
+module.exports = assetLoader;
