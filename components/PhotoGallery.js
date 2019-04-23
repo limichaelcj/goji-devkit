@@ -59,8 +59,7 @@ class PhotoGallery {
         delete root.direction;
         console.error('options.direction must equal one of the following strings: row, column')
       }
-      // padding
-      clean(root, 'padding', 'number', 'options.padding');
+      // padding can be number or string
       // color
       clean(root, 'color', 'string', 'options.color');
       // scrollbar
@@ -89,7 +88,7 @@ class PhotoGallery {
   _initialize(){
     // parent node style
     const settings = this._settings;
-    const pad = `${settings.padding}px`;
+    const pad = typeof settings.padding === 'number' ? `${settings.padding}px` : settings.padding;
     this.node.classList.add('goji-devkit-photogallery-scroll');
     Object.assign(this.node.style, {
       overflow: 'auto',
