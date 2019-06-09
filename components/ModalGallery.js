@@ -1,17 +1,14 @@
 class ModalGallery {
-  constructor(node, options = {}){
-    if (!node || !(node instanceof HTMLElement)){
-      throw new Error('ArgumentError: Constructor requires argument of type HTMLElement')
-    }
-    this._node = node; // parent node to inject in
+  constructor(options = {}){
+    this._node = document.createElement('div');
     this._view = document.createElement('img'); // big picture center display
     this._reel = document.createElement('div'); // holds the images in the gallery
     this._buffers = [document.createElement('div'), document.createElement('div')];
     this._settings = {
       view: 90,
       reel: '20%',
-      color: 'rgba(0,0,0,0.8)',
-      highlight: 'rgba(210,210,210,0.8)'
+      color: 'rgba(15,15,15,0.95)',
+      highlight: 'rgba(240,240,240,0.95)'
     };
     this._state = {
       images: [],
@@ -103,9 +100,9 @@ class ModalGallery {
     this.reel.prepend(this._buffers[0]);
     this.reel.appendChild(this._buffers[1]);
     // class identifiers
-    this.node.classList.add('goji-devkit-modalgallery');
-    this.view.classList.add('goji-devkit-modalgallery-view');
-    this.reel.classList.add('goji-devkit-modalgallery-reel');
+    this.node.classList.add('goji-modalgallery');
+    this.view.classList.add('goji-modalgallery__view');
+    this.reel.classList.add('goji-modalgallery__reel');
 
     // apply styles
     Object.assign(this.node.style, {
@@ -145,6 +142,36 @@ class ModalGallery {
       overflowX: 'auto',
       overflowY: 'hidden'
     });
+    // add exit button
+    const exit = document.createElement('div');
+    exit.innerHTML = '<div></div><div></div>';
+    Object.assign(exit.style, {
+      position: 'absolute',
+      top: '2em',
+      right: '2em',
+      height: '2em',
+      width: '2em',
+      cursor: 'pointer'
+    });
+    Array.from(exit.children).forEach((elem, i) => {
+      Object.assign(elem.style, {
+        position: 'absolute',
+        top: 0,
+        left: '50%',
+        height: '100%',
+        width: 0,
+        borderLeft: '2px solid ' + this.settings.highlight,
+        transform: i < 1 ? 'rotate(45deg)' : 'rotate(-45deg)'
+      })
+    })
+    exit.onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      this._close();
+    }
+    this.node.append(exit);
+    // append modal gallery node to body
+    document.body.append(this.node);
   }
 
   // link open function to img elements in specified class tag in document
@@ -171,6 +198,7 @@ class ModalGallery {
       img.src = images[i].src;
       Object.assign(img.style, {
         height: '100%',
+        width: 'auto',
         marginLeft: i < 1 ? '' : '20px',
         cursor: 'pointer',
         border: '1px solid transparent'
@@ -236,7 +264,6 @@ class ModalGallery {
       return next;
     }
   }
-
 }
 
 module.exports = ModalGallery;
