@@ -7,7 +7,9 @@ class ModalGallery {
     this._settings = {
       view: 90,
       reel: '20%',
+      theme: 'dark',
       color: 'rgba(15,15,15,0.95)',
+      invert: 'rgba(240,240,240,0.95)',
       highlight: 'rgba(240,240,240,0.95)'
     };
     this._state = {
@@ -19,6 +21,15 @@ class ModalGallery {
     this._configure(options);
   }
 
+  // constants
+  static get STYLE(){
+    return {
+      dark: 'rgba(15,15,15,0.95)',
+      light: 'rgba(240,240,240,0.95)'
+    }
+  }
+
+  // getters
   get node(){
     return this._node;
   }
@@ -51,7 +62,8 @@ class ModalGallery {
 
   _applySettings(options){
     const strongParams = validate(options);
-    Object.assign(this._settings, strongParams);
+
+    Object.assign(this._settings, applyTheme(strongParams));
     // HELPER FUNCTIONS
     // data validation
     function permit(obj, allowed){
@@ -62,11 +74,11 @@ class ModalGallery {
       return newObj;
     }
     function validate(options){
-      const root = permit(options, ['view', 'reel', 'color', 'highlight']);
+      const root = permit(options, ['view', 'reel', 'theme', 'highlight']);
       // colors
       clean(root, 'view', 'number', 'options.view');
       clean(root, 'reel', 'string', 'options.reel');
-      clean(root, 'color', 'string', 'options.color');
+      clean(root, 'theme', 'string', 'options.color');
       clean(root, 'highlight', 'string', 'options.highlight');
 
       return root;
@@ -76,6 +88,21 @@ class ModalGallery {
           delete obj[key];
           console.error(`${name} must be of type ${type}`);
         }
+      }
+      function applyTheme(params){
+        if (params.hasOwnProperty('theme')) {
+          switch(params.theme){
+            case 'light':
+              params.color = ModalGallery.STYLE.light;
+              params.invert = ModalGallery.STYLE.dark;
+              break;
+            case 'dark':
+              break;
+            default:
+              delete params.theme;
+          }
+        }
+        return params;
       }
     }
   }
@@ -160,7 +187,7 @@ class ModalGallery {
         left: '50%',
         height: '100%',
         width: 0,
-        borderLeft: '2px solid ' + this.settings.highlight,
+        borderLeft: '2px solid ' + this.settings.invert,
         transform: i < 1 ? 'rotate(45deg)' : 'rotate(-45deg)'
       })
     })

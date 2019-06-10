@@ -72,7 +72,7 @@ new Slideshow(ss, {
     - `bottom`
   - `scale`: Change the scale of the image when out of frame (`ratio`, default: `1`).
   - `rotate`: Change the rotation of the image when out of frame (`degrees`, default: `0`).
-  
+
 ##### PhotoGallery:
 * `direction`: `'row'` (default) or `'column'`
 * `padding`: Spacing between images and border (`px`, default: `40`)
@@ -85,8 +85,25 @@ new Slideshow(ss, {
   - `margin`: Offset distance between scrollbar ends and border (`px`, default: `0`)
   - `shadow`: Scrollbar's shadow color (default: `transparent`)
 
-##### ModalGallery:
+#### ModalGallery:
+Create a new instance of ModalGallery, then link it to a css selector that matches the group of images you want to include in the modal gallery.
+```js
+const mg = new ModalGallery({ theme: 'light' });
+mg.link('.images');
+```
+Each `.images` element will open the modal gallery with all `img` children elements within. Clicking on the `#img1` element will open up the modal gallery with both `#img1` and `#img2` elements in the gallery reel.
+```html
+<div class="images">
+  <img id="img1">
+  <img id="img2">
+</div>
+<div class="images">
+  <img id="3">
+  <img id="4">
+</div>
+```
+##### ModalGallery options:
 * `reel`: Height of the photo reel, where photos can be selected for viewing (`%`/`px`/`vh`, default: `20%`)
 * `view`: Height of the view space, above the reel. Calculated from remaining space after reel height. (`%`, default: `90`)
-* `color`: Background color of the modal element (default: `rgba(0,0,0,0.8)`)
-* `highlight`: Color of image border of selected image in the reel (default: `rgba(210,210,210,0.8`)
+* `theme`: `'light'` or `'dark'`. (default: `'dark'`)
+* `highlight`: Highlighting color of current image. (default: `rgba(210,210,210,0.8`)
