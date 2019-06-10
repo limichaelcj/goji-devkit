@@ -106,4 +106,4 @@ Each `.images` element will open the modal gallery with all `img` children eleme
 * `reel`: Height of the photo reel, where photos can be selected for viewing (`%`/`px`/`vh`, default: `20%`)
 * `view`: Height of the view space, above the reel. Calculated from remaining space after reel height. (`%`, default: `90`)
 * `theme`: `'light'` or `'dark'`. (default: `'dark'`)
-* `highlight`: Highlighting color of current image. (default: `rgba(210,210,210,0.8`)
+* `highlight`: Highlighting color of current image. (default: `#2196F3`)

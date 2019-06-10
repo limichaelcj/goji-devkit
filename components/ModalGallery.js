@@ -10,7 +10,7 @@ class ModalGallery {
       theme: 'dark',
       color: 'rgba(15,15,15,0.95)',
       invert: 'rgba(240,240,240,0.95)',
-      highlight: 'rgba(240,240,240,0.95)'
+      highlight: '#2196F3'
     };
     this._state = {
       images: [],
@@ -241,14 +241,16 @@ class ModalGallery {
     });
     this._viewImage(index);
     this.node.focus();
-    const listener = window.addEventListener('keyup', (e) => {
+    // keydown listener
+    window.addEventListener('keyup', keydownListener);
+    function keydownListener(e){
       e = e || window.event;
       e.preventDefault();
       e.stopPropagation();
       switch(e.keyCode){
         case 27:
           this._close();
-          window.removeEventListener('keyup', listener);
+          window.removeEventListener('keydown', keydownListener);
           break;
         case 37:
           this._viewImage(this._cycle(this.selected - 1));
@@ -258,7 +260,7 @@ class ModalGallery {
           break;
         default:
       }
-    });
+    }
   }
 
   _close() {
