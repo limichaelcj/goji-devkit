@@ -242,9 +242,8 @@ class ModalGallery {
     this._viewImage(index);
     this.node.focus();
     // keydown listener
-    window.addEventListener('keyup', keydownListener);
+    window.addEventListener('keydown', keydownListener);
     function keydownListener(e){
-      e = e || window.event;
       e.preventDefault();
       e.stopPropagation();
       switch(e.keyCode){
