@@ -242,8 +242,7 @@ class ModalGallery {
     this._viewImage(index);
     this.node.focus();
     // keydown listener
-    window.addEventListener('keydown', keydownListener);
-    function keydownListener(e){
+    const keydownListener = e => {
       e.preventDefault();
       e.stopPropagation();
       switch(e.keyCode){
@@ -260,6 +259,7 @@ class ModalGallery {
         default:
       }
     }
+    window.addEventListener('keydown', keydownListener);
   }
 
   _close() {
