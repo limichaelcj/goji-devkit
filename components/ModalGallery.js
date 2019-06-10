@@ -89,21 +89,21 @@ class ModalGallery {
           console.error(`${name} must be of type ${type}`);
         }
       }
-      function applyTheme(params){
-        if (params.hasOwnProperty('theme')) {
-          switch(params.theme){
-            case 'light':
-              params.color = ModalGallery.STYLE.light;
-              params.invert = ModalGallery.STYLE.dark;
-              break;
-            case 'dark':
-              break;
-            default:
-              delete params.theme;
-          }
+    }
+    function applyTheme(params){
+      if (params.hasOwnProperty('theme')) {
+        switch(params.theme){
+          case 'light':
+          params.color = ModalGallery.STYLE.light;
+          params.invert = ModalGallery.STYLE.dark;
+          break;
+          case 'dark':
+          break;
+          default:
+          delete params.theme;
         }
-        return params;
       }
+      return params;
     }
   }
 
