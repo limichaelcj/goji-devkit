@@ -7,7 +7,7 @@ function assetLoader(options = {}){
     selector: options.selector || ['img'],
     spinner: options.spinner || '<div class="spinner"></div>',
     logs: options.logs || false,
-    timeout: options.timeout || 10000,
+    timeout: options.timeout || 5000,
     _containerSizeChange: false
   }
   // clean data
