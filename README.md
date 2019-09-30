@@ -158,8 +158,8 @@ dragElement(draggableElement);
 ```js
 const parallaxSync = require('goji-devkit').ux.parallaxSync;
 
-// elements will be set to position:sticky and change their top
-// values based on the scroll position of the anchor element
+// smaller elements will be set to position:sticky and change their
+// top values based on the scroll position of the tallest element
 parallaxSync('parallax');
 ```
 
