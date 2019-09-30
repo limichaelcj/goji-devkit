@@ -163,6 +163,8 @@ const parallaxSync = require('goji-devkit').ux.parallaxSync;
 parallaxSync('.parallax');
 ```
 
+This function is best used for synced scrolling of adjacent HTML elements that are of varying heights. Because this function leverages the css `position` rule, avoid using it on elements that will depend on a css positioning that is not static or relative.
+
 [parallaxSync demo](https://codepen.io/mykolodon/pen/NWKZprb?editors=0010)
 
 ## _Data Library_
