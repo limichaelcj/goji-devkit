@@ -153,16 +153,17 @@ dragElement(draggableElement);
 
 #### parallaxSync
 
-**Usage:** parallaxSync(_anchor selector_ [String], _links selector_ [String])
+**Usage:** parallaxSync(_selector_ [String])
 
 ```js
 const parallaxSync = require('goji-devkit').ux.parallaxSync;
 
-const anchorSelector = '.parallaxSync-anchor'; // one element
-const linkSelector = '.parallaxSync-link' // one or more elements
-// link elements will be set to position:sticky and change their top values based on the scroll position of the anchor element
-parallaxSync(anchorElement, linkSelector);
+// elements will be set to position:sticky and change their top
+// values based on the scroll position of the anchor element
+parallaxSync('parallax');
 ```
+
+[Demo](https://codepen.io/mykolodon/pen/NWKZprb?editors=0010)
 
 ## _Data Library_
 
