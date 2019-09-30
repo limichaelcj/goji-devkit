@@ -160,10 +160,10 @@ const parallaxSync = require('goji-devkit').ux.parallaxSync;
 
 // smaller elements will be set to position:sticky and change their
 // top values based on the scroll position of the tallest element
-parallaxSync('parallax');
+parallaxSync('.parallax');
 ```
 
-[Demo](https://codepen.io/mykolodon/pen/NWKZprb?editors=0010)
+[parallaxSync demo](https://codepen.io/mykolodon/pen/NWKZprb?editors=0010)
 
 ## _Data Library_
 
